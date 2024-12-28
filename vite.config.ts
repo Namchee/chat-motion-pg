@@ -2,7 +2,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import icons from 'unplugin-icons/vite';
 import unocss from 'unocss/vite';
 
