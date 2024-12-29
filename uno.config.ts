@@ -51,7 +51,7 @@ export default defineConfig({
       provider: "google",
       fonts: {
         sans: ["Geist"],
-        mono: ["JetBrains Mono"],
+        mono: ["Geist Mono"],
       },
     })
   ]
