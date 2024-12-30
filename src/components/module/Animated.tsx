@@ -24,6 +24,7 @@ export default function Animated() {
       }}
       className="group h-auto bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end focus-within:border-gray-400 transition-colors"
     >
+      <motion.div layout="position" className="grid items-end">
       <label
         htmlFor="fileInput"
         className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn"
@@ -40,6 +41,8 @@ export default function Animated() {
           className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors"
         />
       </label>
+      </motion.div>
+
 
       <Button
         size="icon"
@@ -55,7 +58,7 @@ export default function Animated() {
 
       <AnimatePresence>
         <motion.div
-          layout
+          layout="position"
           style={{
             gridRowStart: message || focus ? 1 : 1,
             gridRowEnd: message || focus ? 1 : 1,
@@ -75,15 +78,16 @@ export default function Animated() {
         </motion.div>
       </AnimatePresence>
 
-
-      <Button
-        size="icon"
-        className="w-8 h-8 ml-auto"
-        onFocus={() => setFocus((prev) => prev + 1)}
-        onBlur={() => setFocus((prev) => prev - 1)}
-      >
-        <Send className="size-4 relative top-[1px] -left-[1px]" />
-      </Button>
+      <motion.div layout="preserve-aspect" className="self-end ml-auto">
+        <Button
+          size="icon"
+          className="w-8 h-8"
+          onFocus={() => setFocus((prev) => prev + 1)}
+          onBlur={() => setFocus((prev) => prev - 1)}
+        >
+          <Send className="size-4 relative top-[1px] -left-[1px]" />
+        </Button>
+      </motion.div>
     </motion.div>
   )
 }
