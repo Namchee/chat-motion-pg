@@ -23,7 +23,7 @@ export default function Animated() {
         gap: expanded ? '8px 0px' : '0px 0px',
       }}
       transition={{
-        duration: 0.25,
+        duration: 0.2,
       }}
       className="group bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end focus-within:border-gray-400 transition-colors"
     >
@@ -36,7 +36,7 @@ export default function Animated() {
           gridRowEnd: expanded ? 2 : 1,
         }}
         transition={{
-          duration: 0.25,
+          duration: 0.2,
         }}
       >
         <input
@@ -78,7 +78,6 @@ export default function Animated() {
               />
             </Button>
           </motion.div>
-
         }
       </AnimatePresence>
 
@@ -91,7 +90,7 @@ export default function Animated() {
           gridColumnEnd: expanded ? 4 : 3,
         }}
         transition={{
-          duration: 0.25
+          duration: 0.2
         }}
       >
         <Textarea
@@ -113,7 +112,7 @@ export default function Animated() {
           gridRowEnd: expanded ? 2 : 1,
         }}
         transition={{
-          duration: 0.25
+          duration: 0.2
         }}
       >
         <Button
