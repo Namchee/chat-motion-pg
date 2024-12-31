@@ -16,6 +16,7 @@ export default function Animated() {
 
   return (
     <motion.div
+      layout
       style={{
         gridTemplateColumns: expanded ? 'auto auto 1fr' : 'auto 1fr auto',
         gridTemplateRows: expanded ? '1fr auto' : 'auto 0px',
@@ -35,7 +36,7 @@ export default function Animated() {
           gridRowEnd: expanded ? 2 : 1,
         }}
         transition={{
-          duration: 0.15,
+          duration: 0.25,
         }}
       >
         <input
@@ -62,7 +63,7 @@ export default function Animated() {
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.2 }}
             className="col-start-2 col-end-3"
           >
             <Button
@@ -112,7 +113,7 @@ export default function Animated() {
           gridRowEnd: expanded ? 2 : 1,
         }}
         transition={{
-          duration: 0.15
+          duration: 0.25
         }}
       >
         <Button
