@@ -15,23 +15,6 @@ import { Textarea } from '@/components/Textarea';
 import { Button } from '@/components/Button';
 import { cn } from '@/lib/utils';
 
-const useActiveElement = () => {
-  const [active, setActive] = React.useState(document.activeElement);
-
-  const handleFocusIn = (e) => {
-    setActive(document.activeElement);
-  }
-
-  React.useEffect(() => {
-    document.addEventListener('focusin', handleFocusIn)
-    return () => {
-      document.removeEventListener('focusin', handleFocusIn)
-  };
-  }, [])
-
-  return active;
-}
-
 const children = {
   'chat': <div className="flex items-center gap-2 text-xs">
     <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
@@ -49,27 +32,24 @@ const children = {
 
 export default function Animated() {
   const [message, setMessage] = React.useState<string>('');
-  const [focus, setFocus] = React.useState<number>(0);
+  const [focus, setFocus] = React.useState<number>(1);
   const [mode, setMode] = React.useState<'chat' | 'web'>('chat');
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = React.useState<boolean>(false);
   const expanded = message || focus || open;
 
-  const focusedElement = useActiveElement();
+  const [files, setFiles] = React.useState<File[]>([]);
 
-  React.useEffect(() => {
-     if (focusedElement) {
-        console.log(focusedElement.value);
-     }
-    console.log(focusedElement);
-  }, [focusedElement])
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    setFiles((prev) => [...prev, ...Array.from(files ?? [])]);
+  }
 
   return (
     <motion.div
       layout
       style={{
         gridTemplateColumns: expanded ? 'auto auto 1fr' : 'auto 1fr auto',
-        gridTemplateRows: expanded ? '1fr auto' : 'auto 0px',
-        gap: expanded ? '8px 0px' : '0px 0px',
+        gridTemplateRows: expanded ? 'auto 1fr auto' : 'auto auto 0px',
       }}
       transition={{
         duration: 0.2,
@@ -77,13 +57,17 @@ export default function Animated() {
       layoutDependency={{ expanded }}
       className="group bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end focus-within:border-gray-400 transition-colors"
     >
+      <AnimatePresence>
+
+      </AnimatePresence>
+
       <motion.label
         htmlFor="fileInput"
         layout="position"
         className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
         style={{
-          gridRowStart: expanded ? 2 : 1,
-          gridRowEnd: expanded ? 2 : 1,
+          gridRowStart: expanded ? 3 : 2,
+          gridRowEnd: expanded ? 3 : 2,
         }}
         transition={{
           duration: 0.2,
@@ -97,6 +81,9 @@ export default function Animated() {
           id="fileInput"
           type="file"
           className="hidden"
+          accept="image/png,image/jpeg,image/webp"
+          name="attachment"
+          onChange={handleFileUpload}
           onFocus={() => setFocus((prev) => prev + 1)}
           onBlur={() => setFocus((prev) => prev - 1)}
         />
@@ -112,8 +99,8 @@ export default function Animated() {
             layout="position"
             exit={{ opacity: 0 }}
             style={{
-              gridRowStart: expanded ? 2 : 1,
-              gridRowEnd: expanded ? 2 : 1,
+              gridRowStart: expanded ? 3 : 2,
+              gridRowEnd: expanded ? 3 : 2,
               width: open ? 'auto' : '32px',
             }}
             whileHover={{
@@ -128,7 +115,6 @@ export default function Animated() {
               className={cn("size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode", open && 'bg-gray-200')}
               onFocus={() => {
                 setFocus((prev) => prev + 1);
-                console.log('focused');
               }}
               onBlur={() => {
                 setFocus((prev) => prev - 1);
@@ -169,10 +155,11 @@ export default function Animated() {
       <motion.div
         layout="position"
         style={{
-          gridRowStart: expanded ? 1 : 1,
-          gridRowEnd: expanded ? 1 : 1,
+          gridRowStart: expanded ? 2 : 2,
+          gridRowEnd: expanded ? 2 : 2,
           gridColumnStart: expanded ? 1 : 2,
           gridColumnEnd: expanded ? 4 : 3,
+          marginBottom: expanded ? '8px' : '0px',
         }}
         transition={{
           duration: 0.2
@@ -194,8 +181,8 @@ export default function Animated() {
         layout="position"
         className="ml-auto col-start-3 col-end-4 flex gap-1"
         style={{
-          gridRowStart: expanded ? 2 : 1,
-          gridRowEnd: expanded ? 2 : 1,
+          gridRowStart: expanded ? 3 : 2,
+          gridRowEnd: expanded ? 3 : 2,
         }}
         transition={{
           duration: 0.2

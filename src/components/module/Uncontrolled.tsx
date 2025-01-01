@@ -10,7 +10,13 @@ export default function Uncontrolled() {
   return (
     <div className="group h-auto bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end grid-cols-[auto_auto_1fr] grid-rows-[1fr_auto] group-focus-within:grid-cols-[auto_auto_1fr] gap-y-2 focus-within:border-gray-400 transition-colors has-placeholder-shown:grid-cols-[auto_1fr_auto] has-placeholder-shown:grid-rows-1">
       <label htmlFor="fileInput" className="size-8 grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn" tabIndex={0}>
-        <input id="fileInput" type="file" className="hidden" />
+        <input
+          id="fileInput"
+          type="file"
+          name="attachment"
+          className="hidden"
+          accept="image/png,image/jpeg,image/webp"
+        />
 
         <Paperclip className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors" />
       </label>
