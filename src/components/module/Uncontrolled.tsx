@@ -1,6 +1,7 @@
 import Paperclip from '~icons/lucide/paperclip';
 import Send from '~icons/lucide/send';
 import Globe from '~icons/lucide/globe';
+import Mic from '~icons/lucide/mic';
 
 import { Textarea } from '@/components/Textarea';
 import { Button } from '@/components/Button';
@@ -8,7 +9,7 @@ import { Button } from '@/components/Button';
 export default function Uncontrolled() {
   return (
     <div className="group h-auto bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end grid-cols-[auto_auto_1fr] grid-rows-[1fr_auto] group-focus-within:grid-cols-[auto_auto_1fr] gap-y-2 focus-within:border-gray-400 transition-colors has-placeholder-shown:grid-cols-[auto_1fr_auto] has-placeholder-shown:grid-rows-1">
-      <label htmlFor="fileInput" className="size-8 grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn">
+      <label htmlFor="fileInput" className="size-8 grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn" tabIndex={0}>
         <input id="fileInput" type="file" className="hidden" />
 
         <Paperclip className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors" />
@@ -27,9 +28,19 @@ export default function Uncontrolled() {
         rows={1}
         spellCheck={false} />
 
-      <Button size="icon" className="w-8 h-8  ml-auto">
-        <Send className="size-4 relative top-[1px] -left-[1px]" />
-      </Button>
+      <div className="flex gap-1">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="size-8! grid place-items-center cursor-pointer border-none bg-transparent transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn text-gray-700"
+        >
+          <Mic className="size-4" />
+        </Button>
+
+        <Button size="icon" className="w-8 h-8  ml-auto">
+          <Send className="size-4 relative top-[1px] -left-[1px]" />
+        </Button>
+      </div>
     </div>
   )
 }
