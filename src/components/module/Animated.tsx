@@ -2,25 +2,44 @@ import * as React from 'react';
 
 import { AnimatePresence, motion } from 'motion/react';
 
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../Select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectIcon } from '../Select';
 
 import Paperclip from '~icons/lucide/paperclip';
 import Send from '~icons/lucide/send';
 import Mic from '~icons/lucide/mic';
 import MessageCircle from '~icons/lucide/message-circle';
 import Globe from '~icons/lucide/globe';
+import ChevronDown from '~icons/lucide/chevron-down';
 
 import { Textarea } from '@/components/Textarea';
 import { Button } from '@/components/Button';
+import { cn } from '@/lib/utils';
+
+const useActiveElement = () => {
+  const [active, setActive] = React.useState(document.activeElement);
+
+  const handleFocusIn = (e) => {
+    setActive(document.activeElement);
+  }
+
+  React.useEffect(() => {
+    document.addEventListener('focusin', handleFocusIn)
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn)
+  };
+  }, [])
+
+  return active;
+}
 
 const children = {
-  'chat': <div className="flex items-center gap-2">
+  'chat': <div className="flex items-center gap-2 text-xs">
     <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
     <span className="text-gray-600">
       Chat
     </span>
   </div>,
-  'web': <div className="flex items-center gap-2">
+  'web': <div className="flex items-center gap-2 text-xs">
     <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
     <span className="text-gray-600">
       Web Search
@@ -32,7 +51,17 @@ export default function Animated() {
   const [message, setMessage] = React.useState<string>('');
   const [focus, setFocus] = React.useState<number>(0);
   const [mode, setMode] = React.useState<'chat' | 'web'>('chat');
-  const expanded = message || focus;
+  const [open, setOpen] = React.useState<boolean>(true);
+  const expanded = message || focus || open;
+
+  const focusedElement = useActiveElement();
+
+  React.useEffect(() => {
+     if (focusedElement) {
+        console.log(focusedElement.value);
+     }
+    console.log(focusedElement);
+  }, [focusedElement])
 
   return (
     <motion.div
@@ -61,7 +90,6 @@ export default function Animated() {
         }}
         tabIndex={0}
         layoutDependency={{ expanded }}
-
         onFocus={() => setFocus((prev) => prev + 1)}
         onBlur={() => setFocus((prev) => prev - 1)}
       >
@@ -78,39 +106,65 @@ export default function Animated() {
         />
       </motion.label>
 
-      <AnimatePresence>
-        {expanded &&
+      <Select value={mode} onValueChange={(val) => setMode(val as typeof mode)} open={open} onOpenChange={o => setOpen(o)}>
+        <AnimatePresence>
           <motion.div
             layout="position"
             exit={{ opacity: 0 }}
             style={{
               gridRowStart: expanded ? 2 : 1,
               gridRowEnd: expanded ? 2 : 1,
+              width: open ? 'auto' : '32px',
             }}
             whileHover={{
               width: 'auto',
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ duration: 0.2 }}
             className="col-start-2 col-end-3 w-8 h-8 overflow-hidden ml-1"
           >
-            <Select value={mode} onValueChange={(val) => setMode(val as typeof mode)}>
-              <SelectTrigger className="size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode" onSelect={(e) => e.preventDefault()}
-                onFocus={() => setFocus((prev) => prev + 1)}
-                onBlur={() => setFocus((prev) => prev - 1)}>
-                <SelectValue className="flex items-center gap-2" aria-label={mode}>
-                  {children[mode]}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="chat">Chat</SelectItem>
-                <SelectItem value="web">Web</SelectItem>
-              </SelectContent>
-            </Select>
+            {<SelectTrigger
+              className={cn("size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode", open && 'bg-gray-200')}
+              onFocus={() => {
+                setFocus((prev) => prev + 1);
+                console.log('focused');
+              }}
+              onBlur={() => {
+                setFocus((prev) => prev - 1);
+              }}
+            >
+              <SelectValue className="flex items-center gap-2" aria-label={mode}>
+                {children[mode]}
+              </SelectValue>
+
+              <SelectIcon asChild className={cn('hidden group-hover/mode:block', open && 'block')}>
+                <ChevronDown className="ml-2 size-3 opacity-50" />
+              </SelectIcon>
+            </SelectTrigger>
+            }
           </motion.div>
-        }
-      </AnimatePresence>
+        </AnimatePresence>
+
+        <SelectContent>
+          <SelectItem value="chat" className="cursor-pointer">
+            <div className="flex items-center gap-2">
+              <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
+              <span className="text-gray-600">
+                Chat
+              </span>
+            </div>
+          </SelectItem>
+          <SelectItem value="web" className="cursor-pointer">
+            <div className="flex items-center gap-2">
+              <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
+              <span className="text-gray-600">
+                Web Search
+              </span>
+            </div>
+          </SelectItem>
+        </SelectContent>
+      </Select>
 
       <motion.div
         layout="position"
