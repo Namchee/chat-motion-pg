@@ -32,7 +32,7 @@ const children = {
 
 export default function Animated() {
   const [message, setMessage] = React.useState<string>('');
-  const [focus, setFocus] = React.useState<number>(1);
+  const [focus, setFocus] = React.useState<number>(0);
   const [mode, setMode] = React.useState<'chat' | 'web'>('chat');
   const [open, setOpen] = React.useState<boolean>(false);
   const expanded = message || focus || open;
@@ -58,11 +58,27 @@ export default function Animated() {
       className="group bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end focus-within:border-gray-400 transition-colors"
     >
       <AnimatePresence>
-
+        {files.length > 0 && <motion.div className="flex gap-2 col-span-full mb-2 overflow-auto">
+          {files.map(file => (<motion.div key={file.name} className="relative flex-shrink-0" initial={{ opacity: 0, scale: 0.9, translateY: '4px' }} animate={{ opacity: 1, scale: 1, translateY: '0px' }}>
+            <img src={URL.createObjectURL(file)} title={file.name} alt={file.name} className="w-[64px] h-[64px]" />
+          </motion.div>))}
+        </motion.div>}
       </AnimatePresence>
 
+      <input
+        id="fileInput-animated"
+        type="file"
+        className="hidden"
+        accept="image/png,image/jpeg,image/webp"
+        name="attachment-animated"
+        onChange={handleFileUpload}
+        onFocus={() => setFocus((prev) => prev + 1)}
+        onBlur={() => setFocus((prev) => prev - 1)}
+        multiple
+      />
+
       <motion.label
-        htmlFor="fileInput"
+        htmlFor="fileInput-animated"
         layout="position"
         className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
         style={{
@@ -72,22 +88,10 @@ export default function Animated() {
         transition={{
           duration: 0.2,
         }}
-        tabIndex={0}
         layoutDependency={{ expanded }}
         onFocus={() => setFocus((prev) => prev + 1)}
         onBlur={() => setFocus((prev) => prev - 1)}
       >
-        <input
-          id="fileInput"
-          type="file"
-          className="hidden"
-          accept="image/png,image/jpeg,image/webp"
-          name="attachment"
-          onChange={handleFileUpload}
-          onFocus={() => setFocus((prev) => prev + 1)}
-          onBlur={() => setFocus((prev) => prev - 1)}
-        />
-
         <Paperclip
           className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors"
         />
