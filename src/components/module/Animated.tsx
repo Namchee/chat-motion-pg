@@ -14,6 +14,7 @@ import ChevronDown from '~icons/lucide/chevron-down';
 import { Textarea } from '@/components/Textarea';
 import { Button } from '@/components/Button';
 import { cn } from '@/lib/utils';
+import useFocusWithin from '@/lib/hooks';
 
 const children = {
   'chat': <div className="flex items-center gap-2 text-xs">
@@ -32,7 +33,10 @@ const children = {
 
 export default function Animated() {
   const [message, setMessage] = React.useState<string>('');
-  const [focus, setFocus] = React.useState<number>(0);
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const focus = useFocusWithin(containerRef);
+
   const [mode, setMode] = React.useState<'chat' | 'web'>('chat');
   const [open, setOpen] = React.useState<boolean>(false);
   const expanded = message || focus || open;
@@ -47,6 +51,7 @@ export default function Animated() {
   return (
     <motion.div
       layout
+      ref={containerRef}
       style={{
         gridTemplateColumns: expanded ? 'auto auto 1fr' : 'auto 1fr auto',
         gridTemplateRows: expanded ? 'auto 1fr auto' : 'auto auto 0px',
@@ -68,19 +73,17 @@ export default function Animated() {
       <input
         id="fileInput-animated"
         type="file"
-        className="hidden"
+        className="peer/input w-0 h-0 absolute"
         accept="image/png,image/jpeg,image/webp"
         name="attachment-animated"
         onChange={handleFileUpload}
-        onFocus={() => setFocus((prev) => prev + 1)}
-        onBlur={() => setFocus((prev) => prev - 1)}
         multiple
       />
 
       <motion.label
         htmlFor="fileInput-animated"
         layout="position"
-        className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
+        className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
         style={{
           gridRowStart: expanded ? 3 : 2,
           gridRowEnd: expanded ? 3 : 2,
@@ -89,8 +92,6 @@ export default function Animated() {
           duration: 0.2,
         }}
         layoutDependency={{ expanded }}
-        onFocus={() => setFocus((prev) => prev + 1)}
-        onBlur={() => setFocus((prev) => prev - 1)}
       >
         <Paperclip
           className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors"
@@ -117,12 +118,6 @@ export default function Animated() {
           >
             {<SelectTrigger
               className={cn("size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode", open && 'bg-gray-200')}
-              onFocus={() => {
-                setFocus((prev) => prev + 1);
-              }}
-              onBlur={() => {
-                setFocus((prev) => prev - 1);
-              }}
             >
               <SelectValue className="flex items-center gap-2" aria-label={mode}>
                 {children[mode]}
@@ -176,8 +171,6 @@ export default function Animated() {
           rows={1}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onFocus={() => setFocus((prev) => prev + 1)}
-          onBlur={() => setFocus((prev) => prev - 1)}
           spellCheck={false} />
       </motion.div>
 
@@ -197,8 +190,6 @@ export default function Animated() {
           size="icon"
           variant="ghost"
           className="size-8! grid place-items-center cursor-pointer border-none bg-transparent transition-colors hover:bg-gray-200 focus:bg-gray-200 rounded-md group/btn text-gray-700"
-          onFocus={() => setFocus((prev) => prev + 1)}
-          onBlur={() => setFocus((prev) => prev - 1)}
         >
           <Mic className="size-4" />
         </Button>
@@ -206,8 +197,6 @@ export default function Animated() {
         <Button
           size="icon"
           className="size-8"
-          onFocus={() => setFocus((prev) => prev + 1)}
-          onBlur={() => setFocus((prev) => prev - 1)}
         >
           <Send className="size-4 relative top-[1px] -left-[1px]" />
         </Button>
