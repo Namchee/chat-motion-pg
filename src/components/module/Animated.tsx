@@ -70,6 +70,29 @@ export default function Animated() {
         </motion.div>}
       </AnimatePresence>
 
+      <motion.div
+        layout="position"
+        style={{
+          gridRowStart: expanded ? 2 : 2,
+          gridRowEnd: expanded ? 2 : 2,
+          gridColumnStart: expanded ? 1 : 2,
+          gridColumnEnd: expanded ? 4 : 3,
+          marginBottom: expanded ? '8px' : '0px',
+        }}
+        transition={{
+          duration: 0.2
+        }}
+        layoutDependency={{ expanded }}
+      >
+        <Textarea
+          className="peer resize-none h-full border-none focus-visible:outline-none py-[6px] px-2 text-sm text-gray-700"
+          placeholder="Ask me anything..."
+          rows={1}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          spellCheck={false} />
+      </motion.div>
+
       <input
         id="fileInput-animated"
         type="file"
@@ -99,37 +122,35 @@ export default function Animated() {
       </motion.label>
 
       <Select value={mode} onValueChange={(val) => setMode(val as typeof mode)} open={open} onOpenChange={o => setOpen(o)}>
-        <AnimatePresence>
-          <motion.div
-            layout="position"
-            exit={{ opacity: 0 }}
-            style={{
-              gridRowStart: expanded ? 3 : 2,
-              gridRowEnd: expanded ? 3 : 2,
-              width: open ? 'auto' : '32px',
-            }}
-            whileHover={{
-              width: 'auto',
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            className="col-start-2 col-end-3 w-8 h-8 overflow-hidden ml-1"
+        <motion.div
+          layout="position"
+          exit={{ opacity: 0 }}
+          style={{
+            gridRowStart: expanded ? 3 : 2,
+            gridRowEnd: expanded ? 3 : 2,
+            width: open ? 'auto' : '32px',
+            opacity: expanded ? 1 : 0
+          }}
+          whileHover={{
+            width: 'auto',
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
+          className="col-start-2 col-end-3 w-8 h-8 overflow-hidden ml-1"
+        >
+          <SelectTrigger
+            className={cn("size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode", open && 'bg-gray-200')}
           >
-            {<SelectTrigger
-              className={cn("size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode", open && 'bg-gray-200')}
-            >
-              <SelectValue className="flex items-center gap-2" aria-label={mode}>
-                {children[mode]}
-              </SelectValue>
+            <SelectValue className="flex items-center gap-2" aria-label={mode}>
+              {children[mode]}
+            </SelectValue>
 
-              <SelectIcon asChild className={cn('hidden group-hover/mode:block', open && 'block')}>
-                <ChevronDown className="ml-2 size-3 opacity-50" />
-              </SelectIcon>
-            </SelectTrigger>
-            }
-          </motion.div>
-        </AnimatePresence>
+            <SelectIcon asChild className={cn('hidden group-hover/mode:block', open && 'block')}>
+              <ChevronDown className="ml-2 size-3 opacity-50" />
+            </SelectIcon>
+          </SelectTrigger>
+        </motion.div>
 
         <SelectContent>
           <SelectItem value="chat" className="cursor-pointer">
@@ -151,28 +172,7 @@ export default function Animated() {
         </SelectContent>
       </Select>
 
-      <motion.div
-        layout="position"
-        style={{
-          gridRowStart: expanded ? 2 : 2,
-          gridRowEnd: expanded ? 2 : 2,
-          gridColumnStart: expanded ? 1 : 2,
-          gridColumnEnd: expanded ? 4 : 3,
-          marginBottom: expanded ? '8px' : '0px',
-        }}
-        transition={{
-          duration: 0.2
-        }}
-        layoutDependency={{ expanded }}
-      >
-        <Textarea
-          className="peer resize-none h-full border-none focus-visible:outline-none py-[6px] px-2 text-sm text-gray-700"
-          placeholder="Ask me anything..."
-          rows={1}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          spellCheck={false} />
-      </motion.div>
+
 
       <motion.div
         layout="position"
