@@ -18,10 +18,11 @@ import MessageCircle from "~icons/lucide/message-circle";
 import Globe from "~icons/lucide/globe";
 import ChevronDown from "~icons/lucide/chevron-down";
 
-import { Textarea } from "@/components/Textarea";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import useFocusWithin from "@/lib/hooks";
+
+import ImageChip from "@/components/ImageChip";
 
 const children = {
   chat: (
@@ -42,7 +43,7 @@ export default function Animated() {
   const [message, setMessage] = React.useState<string>("");
 
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const focus = useFocusWithin(containerRef);
+  const focus = true;
 
   const [mode, setMode] = React.useState<"chat" | "web">("chat");
   const [open, setOpen] = React.useState<boolean>(false);
@@ -54,6 +55,10 @@ export default function Animated() {
     const files = e.target.files;
     setFiles((prev) => [...prev, ...Array.from(files ?? [])]);
   };
+
+  const handleFileDelete = (idx: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+  }
 
   return (
     <motion.div
@@ -71,22 +76,9 @@ export default function Animated() {
     >
       <AnimatePresence>
         {files.length > 0 && (
-          <motion.div className="flex gap-2 col-span-full mb-2 overflow-auto">
-            {files.map((file) => (
-              <motion.div
-                key={file.name}
-                className="relative flex-shrink-0"
-                initial={{ opacity: 0, scale: 0.9, translateY: "4px" }}
-                animate={{ opacity: 1, scale: 1, translateY: "0px" }}
-              >
-                <img
-                  src={URL.createObjectURL(file)}
-                  title={file.name}
-                  alt={file.name}
-                  className="w-[64px] h-[64px]"
-                />
-              </motion.div>
-            ))}
+          <motion.div
+            className="flex gap-1 col-span-full mb-2 overflow-auto no-scrollbar" exit={{ height: '0px', marginBottom: '0px' }}>
+            {files.map((file, idx) => <ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} />)}
           </motion.div>
         )}
       </AnimatePresence>
@@ -104,69 +96,51 @@ export default function Animated() {
           duration: 0.2,
         }}
         layoutDependency={{ expanded }}
-      >
-        <Textarea
-          className="peer resize-none h-full border-none focus-visible:outline-none py-[6px] px-2 text-sm text-gray-700"
-          placeholder="Ask me anything..."
-          rows={1}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          spellCheck={false}
-        />
-      </motion.div>
-
-      <input
-        id="fileInput-animated"
-        type="file"
-        className="peer/input w-0 h-0 absolute"
-        accept="image/png,image/jpeg,image/webp"
-        name="attachment-animated"
-        onChange={handleFileUpload}
-        multiple
+        contentEditable
+        spellCheck={false}
+        tabIndex={0}
+        data-placeholder="Ask me anything..."
+        className="focus:outline-none py-[6px] px-2 text-sm text-gray-700"
+        onInput={(e) => setMessage(e.currentTarget.textContent ?? "")}
       />
 
-      <motion.label
-        htmlFor="fileInput-animated"
-        layout="position"
-        className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
+      <motion.div layout
         style={{
           gridRowStart: expanded ? 3 : 2,
-          gridRowEnd: expanded ? 3 : 2,
+          gridRowEnd: expanded ? 4 : 3,
         }}
         transition={{
           duration: 0.2,
         }}
         layoutDependency={{ expanded }}
+        className="flex gap-1 items-center"
       >
-        <Paperclip className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors" />
-      </motion.label>
+        <input
+          id="fileInput-animated"
+          type="file"
+          className="peer/input w-0 h-0 absolute"
+          accept="image/png,image/jpeg,image/webp"
+          name="attachment-animated"
+          onChange={handleFileUpload}
+          multiple
+        />
 
-      <Select
-        value={mode}
-        onValueChange={(val) => setMode(val as typeof mode)}
-        open={open}
-        onOpenChange={(o) => setOpen(o)}
-      >
-        <motion.div
-          layout="position"
-          exit={{ opacity: 0 }}
-          style={{
-            gridRowStart: expanded ? 3 : 2,
-            gridRowEnd: expanded ? 3 : 2,
-            width: open ? "auto" : "32px",
-            opacity: expanded ? 1 : 0,
-          }}
-          whileHover={{
-            width: "auto",
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-          className="col-start-2 col-end-3 w-8 h-8 overflow-hidden ml-1"
+        <label
+          htmlFor="fileInput-animated"
+          className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
+        >
+          <Paperclip className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors" />
+        </label>
+
+        <Select
+          value={mode}
+          onValueChange={(val) => setMode(val as typeof mode)}
+          open={open}
+          onOpenChange={(o) => setOpen(o)}
         >
           <SelectTrigger
             className={cn(
-              "size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode",
+              "hidden size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode",
               open && "bg-gray-200"
             )}
           >
@@ -181,23 +155,23 @@ export default function Animated() {
               <ChevronDown className="ml-2 size-3 opacity-50" />
             </SelectIcon>
           </SelectTrigger>
-        </motion.div>
 
-        <SelectContent>
-          <SelectItem value="chat" className="cursor-pointer">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-              <span className="text-gray-600">Chat</span>
-            </div>
-          </SelectItem>
-          <SelectItem value="web" className="cursor-pointer">
-            <div className="flex items-center gap-2">
-              <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-              <span className="text-gray-600">Web Search</span>
-            </div>
-          </SelectItem>
-        </SelectContent>
-      </Select>
+          <SelectContent>
+            <SelectItem value="chat" className="cursor-pointer">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
+                <span className="text-gray-600">Chat</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="web" className="cursor-pointer">
+              <div className="flex items-center gap-2">
+                <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
+                <span className="text-gray-600">Web Search</span>
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </motion.div>
 
       <motion.div
         layout="position"
