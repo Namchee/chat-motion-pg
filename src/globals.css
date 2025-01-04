@@ -64,3 +64,19 @@
     scrollbar-width: none;
   }
 }
+
+[contenteditable=true] {
+  position: relative;
+}
+
+[contenteditable=true]:empty:before {
+  content: attr(data-placeholder);
+  color: #6b7280;
+  position: absolute;
+}
+
+[contenteditable=true]:has(>br:only-child):before {
+  content: attr(data-placeholder);
+  color: #6b7280;
+  position: absolute;
+}
