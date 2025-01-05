@@ -16,7 +16,7 @@ import Send from "~icons/lucide/send";
 import Mic from "~icons/lucide/mic";
 import MessageCircle from "~icons/lucide/message-circle";
 import Globe from "~icons/lucide/globe";
-import ChevronDown from "~icons/lucide/chevron-down";
+import ChevronDown from '~icons/lucide/chevron-down';
 
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
@@ -28,13 +28,13 @@ const children = {
   chat: (
     <div className="flex items-center gap-2 text-xs">
       <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-      <span className="text-gray-600">Chat</span>
+      <span className="text-gray-600 mr-1">Chat</span>
     </div>
   ),
   web: (
     <div className="flex items-center gap-2 text-xs">
       <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-      <span className="text-gray-600">Web Search</span>
+      <span className="text-gray-600 mr-1">Web</span>
     </div>
   ),
 };
@@ -43,13 +43,14 @@ export default function Animated() {
   const [message, setMessage] = React.useState<string>("");
 
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const focus = true;
+  const focus = useFocusWithin(containerRef);
 
   const [mode, setMode] = React.useState<"chat" | "web">("chat");
   const [open, setOpen] = React.useState<boolean>(false);
-  const expanded = message || focus || open;
 
   const [files, setFiles] = React.useState<File[]>([]);
+
+  const expanded = message || focus || files.length > 0 || open;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -66,22 +67,22 @@ export default function Animated() {
       ref={containerRef}
       style={{
         gridTemplateColumns: expanded ? "auto auto 1fr" : "auto 1fr auto",
-        gridTemplateRows: expanded ? "auto 1fr auto" : "auto auto 0px",
+        gridTemplateRows: expanded ? "auto 1fr auto" : files.length > 0 ? "auto auto 0px" : "0px auto 0px",
       }}
       transition={{
-        duration: 0.2,
+        duration: 0.2
       }}
       layoutDependency={{ expanded }}
       className="group bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end focus-within:border-gray-400 transition-colors"
     >
-      <AnimatePresence>
-        {files.length > 0 && (
-          <motion.div
-            className="flex gap-1 col-span-full mb-2 overflow-auto no-scrollbar" exit={{ height: '0px', marginBottom: '0px' }}>
-            {files.map((file, idx) => <ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} />)}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        className="flex gap-1 col-span-full overflow-auto no-scrollbar h-auto ml-2"
+        style={{
+          marginBottom: files.length > 0 ? "8px" : "0px",
+        }}
+      >
+        {files.map((file, idx) => <AnimatePresence key={file.name}><ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
+      </motion.div>
 
       <motion.div
         layout="position"
@@ -104,7 +105,7 @@ export default function Animated() {
         onInput={(e) => setMessage(e.currentTarget.textContent ?? "")}
       />
 
-      <motion.div layout
+      <motion.div layout="position"
         style={{
           gridRowStart: expanded ? 3 : 2,
           gridRowEnd: expanded ? 4 : 3,
@@ -127,12 +128,14 @@ export default function Animated() {
 
         <label
           htmlFor="fileInput-animated"
-          className="size-8! grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
+          className="size-8! flex-shrink-0 grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
         >
           <Paperclip className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors" />
         </label>
+      </motion.div>
 
-        <Select
+      <AnimatePresence>
+        {expanded && <Select
           value={mode}
           onValueChange={(val) => setMode(val as typeof mode)}
           open={open}
@@ -140,20 +143,36 @@ export default function Animated() {
         >
           <SelectTrigger
             className={cn(
-              "hidden size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode",
+              "size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode",
               open && "bg-gray-200"
             )}
+            asChild
           >
-            <SelectValue className="flex items-center gap-2" aria-label={mode}>
-              {children[mode]}
-            </SelectValue>
+            <motion.button
+              layout
+              className="ml-1 h-auto col-start-2 col-end-3 w-[48px]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              whileFocus={{
+                width: 'auto',
+              }}
+              whileHover={{
+                width: 'auto',
+              }}
+              style={{
+                width: open ? 'auto' : '48px',
+              }}
+              transition={{
+                duration: 0.2
+              }}>
+              <SelectValue aria-label={mode}>
+                {children[mode]}
+              </SelectValue>
 
-            <SelectIcon
-              asChild
-              className={cn("hidden group-hover/mode:block", open && "block")}
-            >
-              <ChevronDown className="ml-2 size-3 opacity-50" />
-            </SelectIcon>
+              <SelectIcon asChild>
+                <ChevronDown className="size-[14px] mt-[2px] opacity-50 flex-shrink-0" />
+              </SelectIcon>
+            </motion.button>
           </SelectTrigger>
 
           <SelectContent>
@@ -170,8 +189,8 @@ export default function Animated() {
               </div>
             </SelectItem>
           </SelectContent>
-        </Select>
-      </motion.div>
+        </Select>}
+      </AnimatePresence>
 
       <motion.div
         layout="position"
