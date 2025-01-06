@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function useFocusWithin(ref: React.RefObject<unknown>) {
+export default function useFocusWithin(ref: React.RefObject<HTMLElement>) {
   const [isFocused, setIsFocused] = React.useState<boolean>(false);
 
   function hasFocus(el: HTMLElement): boolean {
@@ -16,6 +16,7 @@ export default function useFocusWithin(ref: React.RefObject<unknown>) {
       if (!ref.current) {
         return false;
       }
+
       setIsFocused(hasFocus(ref.current as HTMLElement));
     }
     function focusOutHandler() {
@@ -23,7 +24,7 @@ export default function useFocusWithin(ref: React.RefObject<unknown>) {
         return false;
       }
 
-      setIsFocused(false);
+      setIsFocused(hasFocus(ref.current as HTMLElement));
     }
 
     document.addEventListener('focusin', focusInHandler);

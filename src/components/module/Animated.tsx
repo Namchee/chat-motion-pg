@@ -8,7 +8,6 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-  SelectIcon,
 } from "../Select";
 
 import Paperclip from "~icons/lucide/paperclip";
@@ -16,7 +15,6 @@ import Send from "~icons/lucide/send";
 import Mic from "~icons/lucide/mic";
 import MessageCircle from "~icons/lucide/message-circle";
 import Globe from "~icons/lucide/globe";
-import ChevronDown from '~icons/lucide/chevron-down';
 
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
@@ -25,18 +23,8 @@ import useFocusWithin from "@/lib/hooks";
 import ImageChip from "@/components/ImageChip";
 
 const children = {
-  chat: (
-    <div className="flex items-center gap-2 text-xs">
-      <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-      <span className="text-gray-600 mr-1">Chat</span>
-    </div>
-  ),
-  web: (
-    <div className="flex items-center gap-2 text-xs">
-      <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-      <span className="text-gray-600 mr-1">Web</span>
-    </div>
-  ),
+  chat: <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 group-focus/mode:text-gray-700 transition-colors" />,
+  web: <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 group-focus/mode:text-gray-700 transition-colors" />,
 };
 
 export default function Animated() {
@@ -46,11 +34,9 @@ export default function Animated() {
   const focus = useFocusWithin(containerRef);
 
   const [mode, setMode] = React.useState<"chat" | "web">("chat");
-  const [open, setOpen] = React.useState<boolean>(false);
-
   const [files, setFiles] = React.useState<File[]>([]);
 
-  const expanded = message || focus || files.length > 0 || open;
+  const expanded = message || focus || files.length;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -67,7 +53,7 @@ export default function Animated() {
       ref={containerRef}
       style={{
         gridTemplateColumns: expanded ? "auto auto 1fr" : "auto 1fr auto",
-        gridTemplateRows: expanded ? "auto 1fr auto" : files.length > 0 ? "auto auto 0px" : "0px auto 0px",
+        gridTemplateRows: expanded ? "auto 1fr auto"  : "0px auto 0px",
       }}
       transition={{
         duration: 0.2
@@ -76,9 +62,13 @@ export default function Animated() {
       className="group bg-white border border-gray-300 rounded-md p-1 w-full max-w-lg grid items-end focus-within:border-gray-400 transition-colors"
     >
       <motion.div
+        layout
         className="flex gap-1 col-span-full overflow-auto no-scrollbar h-auto ml-2"
         style={{
           marginBottom: files.length > 0 ? "8px" : "0px",
+        }}
+        transition={{
+          duration: 0.2,
         }}
       >
         {files.map((file, idx) => <AnimatePresence key={file.name}><ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
@@ -135,61 +125,47 @@ export default function Animated() {
       </motion.div>
 
       <AnimatePresence>
-        {expanded && <Select
-          value={mode}
-          onValueChange={(val) => setMode(val as typeof mode)}
-          open={open}
-          onOpenChange={(o) => setOpen(o)}
-        >
-          <SelectTrigger
-            className={cn(
-              "size-full border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 group/mode",
-              open && "bg-gray-200"
-            )}
-            asChild
-          >
-            <motion.button
-              layout
-              className="ml-1 h-auto col-start-2 col-end-3 w-[48px]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              whileFocus={{
-                width: 'auto',
+        {expanded && <motion.div
+          layout="position"
+          className="ml-1 w-auto col-start-2 col-end-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            duration: 0.2,
+          }}>
+            <Select
+              value={mode}
+              onValueChange={(val) => {
+                setMode(val as typeof mode)
               }}
-              whileHover={{
-                width: 'auto',
-              }}
-              style={{
-                width: open ? 'auto' : '48px',
-              }}
-              transition={{
-                duration: 0.2
-              }}>
-              <SelectValue aria-label={mode}>
-                {children[mode]}
-              </SelectValue>
+            >
+              <SelectTrigger
+                className={cn(
+                  "w-[48px] h-8 border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 data-[state=open]:bg-gray-200 group/mode",
+                )}
+              >
+                <SelectValue aria-label={mode}>
+                  {children[mode]}
+                </SelectValue>
+              </SelectTrigger>
 
-              <SelectIcon asChild>
-                <ChevronDown className="size-[14px] mt-[2px] opacity-50 flex-shrink-0" />
-              </SelectIcon>
-            </motion.button>
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="chat" className="cursor-pointer">
-              <div className="flex items-center gap-2">
-                <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-                <span className="text-gray-600">Chat</span>
-              </div>
-            </SelectItem>
-            <SelectItem value="web" className="cursor-pointer">
-              <div className="flex items-center gap-2">
-                <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
-                <span className="text-gray-600">Web Search</span>
-              </div>
-            </SelectItem>
-          </SelectContent>
-        </Select>}
+              <SelectContent>
+                <SelectItem value="chat" className="cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <MessageCircle className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
+                    <span className="text-gray-600">Chat</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="web" className="cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Globe className="size-4 text-gray-500 flex-shrink-0 group-hover/mode:text-gray-700 transition-colors" />
+                    <span className="text-gray-600">Web Search</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </motion.div>}
       </AnimatePresence>
 
       <motion.div
