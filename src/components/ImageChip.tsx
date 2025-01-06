@@ -31,7 +31,7 @@ export default function ImageChip({ image, onDelete }: ImageChipProps) {
       src={URL.createObjectURL(image)}
       title={image.name}
       alt={image.name}
-      className="w-[64px] h-[64px] object-contain bg-gray-100 rounded-md"
+      className="w-[64px] h-[64px] object-cover bg-gray-100 rounded-md"
     />
   </motion.div>;
 }

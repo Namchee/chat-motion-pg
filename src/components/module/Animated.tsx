@@ -118,9 +118,9 @@ export default function Animated() {
 
         <label
           htmlFor="fileInput-animated"
-          className="size-8! flex-shrink-0 grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 focus:outline-none focus:ring-1 focus:ring-ring"
+          className="size-8! flex-shrink-0 grid place-items-center cursor-pointer border-none transition-colors hover:bg-gray-200 peer-focus/input:bg-gray-200 rounded-md group/btn col-start-1 col-end-2 peer-focus/input:ring-ring peer-focus/input:ring-1 text-gray-500 hover:text-gray-700 peer-focus/input:text-gray-700 transition-colors"
         >
-          <Paperclip className="size-4 text-gray-500 group-hover/btn:text-gray-700 group-focus/btn:text-gray-700 transition-colors" />
+          <Paperclip className="size-4" />
         </label>
       </motion.div>
 
@@ -142,7 +142,7 @@ export default function Animated() {
             >
               <SelectTrigger
                 className={cn(
-                  "w-[48px] h-8 border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors focus:ring-none focus:outline-ring px-2 data-[state=open]:bg-gray-200 group/mode",
+                  "w-[48px] h-8 border-none hover:bg-gray-200 focus:bg-gray-200 transition-colors px-2 data-[state=open]:bg-gray-200 data-[state=open]:ring-ring data-[state=open]:ring-1 group/mode",
                 )}
               >
                 <SelectValue aria-label={mode}>
