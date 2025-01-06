@@ -1,5 +1,6 @@
 import Uncontrolled from "@/components/module/Uncontrolled";
 import Animated from "@/components/module/Animated";
+import ComingSoon from "./components/module/ComingSoon";
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
 
       <div className="relative border-b border-gray-200 grid place-items-center">
         <p className="absolute top-4 left-4 text-gray-400 text-sm font-mono">
-          Animated Height
+          Animated
         </p>
 
         <Animated />
@@ -22,18 +23,18 @@ export default function App() {
 
       <div className="relative border-r border-gray-200 grid place-items-center">
         <p className="absolute top-4 left-4 text-gray-400 text-sm font-mono">
-          w/ Suggestions
+          Morphed
         </p>
 
-        <Uncontrolled />
+        <ComingSoon />
       </div>
 
       <div className="relative grid place-items-center">
         <p className="absolute top-4 left-4 text-gray-400 text-sm font-mono">
-          Uncontrolled Form
+          Animated Text Bubble
         </p>
 
-        <Uncontrolled />
+        <ComingSoon />
       </div>
     </>
   )
