@@ -32,6 +32,7 @@ export default function Animated() {
   const [message, setMessage] = React.useState<string>("");
 
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLDivElement>(null);
   const focus = useFocusWithin(containerRef);
 
   const [mode, setMode] = React.useState<"chat" | "web">("chat");
@@ -50,8 +51,6 @@ export default function Animated() {
 
   return (
     <div className="w-full max-w-lg space-y-3">
-      <Suggestions />
-
       <motion.div
         layout
         ref={containerRef}
@@ -80,6 +79,7 @@ export default function Animated() {
 
         <motion.div
           layout="position"
+          ref={inputRef}
           style={{
             gridRowStart: expanded ? 2 : 2,
             gridRowEnd: expanded ? 2 : 2,
@@ -197,7 +197,13 @@ export default function Animated() {
           </Button>
         </motion.div>
       </motion.div>
-    </div>
 
+      <Suggestions onSelect={s => {
+        if (inputRef.current) {
+          inputRef.current.textContent = s;
+          setMessage(s);
+        }
+      }} />
+    </div>
   );
 }
