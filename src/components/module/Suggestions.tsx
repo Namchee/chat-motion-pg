@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import React from "react";
 
 type SuggestionsProps = {
   onSelect?: (suggestion: string) => void;
@@ -42,21 +43,37 @@ const suggestions = [
   "Write Me...",
   "Summarize...",
   "Analyze...",
-  "Suprise Me!"
+  "Surprise Me!"
 ];
 
 export default function Suggestions({ onSelect }: SuggestionsProps) {
-  return (
+  const [show, setShow] = React.useState(true);
 
-        suggestions.map((s) => (
+  return (
+    <AnimatePresence>
+      {
+        show && <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          transition={{ duration: 0.2 }}
+          className="absolute w-full overflow-auto flex gap-2 no-scrollbar"
+        >{suggestions.map((s) => (
           <motion.button
             key={s}
             variants={item}
-            onClick={() => onSelect?.(s)}
-            className="w-22 h-8 flex-shrink-0 border rounded-full border-gray-300 text-xs text-gray-500 bg-transparent whitespace-nowrap hover:bg-gray-100 transition-colors hover:border-gray-400 focus:bg-gray-100 focus:border-gray-400"
+            onClick={() => {
+              setShow(false);
+              onSelect?.(s);
+            }}
+            className="w-24 h-8 flex-shrink-0 border rounded-full border-gray-300 text-xs text-gray-500 bg-transparent whitespace-nowrap hover:bg-gray-100 transition-colors hover:border-gray-400 focus:bg-gray-100 focus:border-gray-400"
           >
             {s}
           </motion.button>
-        ))
+        ))}</motion.div>
+      }
+
+    </AnimatePresence>
   );
 }

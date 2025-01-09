@@ -36,7 +36,6 @@ export default function Animated() {
 
   const [mode, setMode] = React.useState<"chat" | "web">("chat");
   const [files, setFiles] = React.useState<File[]>([]);
-  const [suggested, setSuggested] = React.useState(false);
 
   const focus = useFocusWithin(containerRef);
 
@@ -52,7 +51,7 @@ export default function Animated() {
   }
 
   return (
-    <div transition={{ duration: 0.2 }} className="w-full max-w-lg space-y-3">
+    <div className="relative w-full max-w-lg space-y-3">
       <motion.div
         layout
         ref={containerRef}
@@ -200,27 +199,14 @@ export default function Animated() {
         </motion.div>
       </motion.div>
 
-      <AnimatePresence mode="wait">
-        {!suggested && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="w-full overflow-auto flex gap-2 no-scrollbar"
-          >
-            <Suggestions
-              onSelect={(s) => {
-                if (inputRef.current) {
-                  inputRef.current.textContent = s;
-                  setMessage(s);
-                  setSuggested(true);
-                }
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Suggestions
+        onSelect={(s) => {
+          if (inputRef.current) {
+            inputRef.current.textContent = s;
+            setMessage(s);
+          }
+        }}
+      />
     </div>
   );
 }
