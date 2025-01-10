@@ -20,7 +20,7 @@ import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import useFocusWithin from "@/lib/hooks";
 
-import ImageChip from "@/components/ImageChip";
+import FileChip from "@/components/FileChip";
 import Suggestions from "./Suggestions";
 
 const children = {
@@ -63,7 +63,7 @@ export default function Animated() {
           duration: 0.2
         }}
         layoutDependency={{ expanded }}
-        className="group bg-white border border-gray-300 rounded-md p-1 w-full grid items-end focus-within:border-gray-400 transition-colors"
+        className="group bg-white border border-gray-300 rounded-md w-full grid items-end focus-within:border-gray-400 transition-colors overflow-hidden"
       >
         <motion.div
           layout="position"
@@ -83,7 +83,7 @@ export default function Animated() {
           spellCheck={false}
           tabIndex={0}
           data-placeholder="Ask me anything..."
-          className="focus:outline-none py-[6px] px-2 text-sm text-gray-700"
+          className="focus:outline-none py-[10px] px-3 text-sm text-gray-700"
           onInput={(e) => setMessage(e.currentTarget.textContent ?? "")}
         />
 
@@ -96,13 +96,13 @@ export default function Animated() {
             duration: 0.2,
           }}
           layoutDependency={{ expanded }}
-          className="flex gap-1 items-center"
+          className="flex gap-1 items-center ml-1 mb-1"
         >
           <input
             id="fileInput-animated"
             type="file"
             className="peer/input w-0 h-0 absolute"
-            accept="image/png,image/jpeg,image/webp"
+            accept="image/png,image/jpeg,image/webp,image/gif,application/pdf"
             name="attachment-animated"
             onChange={handleFileUpload}
             multiple
@@ -119,7 +119,7 @@ export default function Animated() {
         <AnimatePresence>
           {expanded && <motion.div
             layout="position"
-            className="ml-1 w-auto col-start-2 col-end-3"
+            className="ml-1 w-auto col-start-2 col-end-3 mb-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -162,7 +162,7 @@ export default function Animated() {
 
         <motion.div
           layout="position"
-          className="ml-auto col-start-3 col-end-4 flex gap-1"
+          className="ml-auto col-start-3 col-end-4 flex gap-1 mr-1 mb-1"
           style={{
             gridRowStart: expanded ? 2 : 1,
             gridRowEnd: expanded ? 2 : 1,
@@ -187,15 +187,18 @@ export default function Animated() {
 
         <motion.div
           layout
-          className="flex gap-1 col-span-full overflow-auto no-scrollbar h-auto bg-gray-100 row-start-3 row-end-4"
+          className="flex gap-1 col-span-full overflow-x-auto overflow-y-hidden no-scrollbar h-auto bg-gray-100 row-start-3 row-end-4 px-2"
           style={{
-            marginTop: files.length > 0 ? "8px" : "0px",
+            paddingTop: files.length > 0 ? '4px' : 0,
+            paddingBottom: files.length > 0 ? '4px' : 0,
+            marginTop: files.length > 0 ? "4px" : "0px",
+            borderTop: files.length > 0 ? "1px solid #d1d5db" : "none",
           }}
           transition={{
             duration: 0.2,
           }}
         >
-          {files.map((file, idx) => <AnimatePresence key={file.name} mode="sync"><ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
+          {files.map((file, idx) => <AnimatePresence key={file.name} mode="sync"><FileChip file={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
         </motion.div>
       </motion.div>
 
