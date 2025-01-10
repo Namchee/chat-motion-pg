@@ -51,13 +51,13 @@ export default function Animated() {
   }
 
   return (
-    <div className="relative w-full max-w-lg space-y-3">
+    <motion.div layout="size" transition={{ duration: 0.2 }} className="relative w-full max-w-lg space-y-3">
       <motion.div
         layout
         ref={containerRef}
         style={{
           gridTemplateColumns: expanded ? "auto auto 1fr" : "auto 1fr auto",
-          gridTemplateRows: expanded ? "auto 1fr auto" : "0px auto 0px",
+          gridTemplateRows: expanded ? "1fr auto auto" : "auto 0px 0px",
         }}
         transition={{
           duration: 0.2
@@ -66,23 +66,10 @@ export default function Animated() {
         className="group bg-white border border-gray-300 rounded-md p-1 w-full grid items-end focus-within:border-gray-400 transition-colors"
       >
         <motion.div
-          layout
-          className="flex gap-1 col-span-full overflow-auto no-scrollbar h-auto ml-2"
-          style={{
-            marginBottom: files.length > 0 ? "8px" : "0px",
-          }}
-          transition={{
-            duration: 0.2,
-          }}
-        >
-          {files.map((file, idx) => <AnimatePresence key={file.name}><ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
-        </motion.div>
-
-        <motion.div
           layout="position"
           ref={inputRef}
           style={{
-            gridRowStart: expanded ? 2 : 2,
+            gridRowStart: expanded ? 1 : 1,
             gridRowEnd: expanded ? 2 : 2,
             gridColumnStart: expanded ? 1 : 2,
             gridColumnEnd: expanded ? 4 : 3,
@@ -102,8 +89,8 @@ export default function Animated() {
 
         <motion.div layout="position"
           style={{
-            gridRowStart: expanded ? 3 : 2,
-            gridRowEnd: expanded ? 4 : 3,
+            gridRowStart: expanded ? 2 : 1,
+            gridRowEnd: expanded ? 3 : 2,
           }}
           transition={{
             duration: 0.2,
@@ -177,8 +164,8 @@ export default function Animated() {
           layout="position"
           className="ml-auto col-start-3 col-end-4 flex gap-1"
           style={{
-            gridRowStart: expanded ? 3 : 2,
-            gridRowEnd: expanded ? 3 : 2,
+            gridRowStart: expanded ? 2 : 1,
+            gridRowEnd: expanded ? 2 : 1,
           }}
           transition={{
             duration: 0.2,
@@ -197,6 +184,19 @@ export default function Animated() {
             <Send className="size-4 relative top-[1px] -left-[1px]" />
           </Button>
         </motion.div>
+
+        <motion.div
+          layout
+          className="flex gap-1 col-span-full overflow-auto no-scrollbar h-auto bg-gray-100 row-start-3 row-end-4"
+          style={{
+            marginTop: files.length > 0 ? "8px" : "0px",
+          }}
+          transition={{
+            duration: 0.2,
+          }}
+        >
+          {files.map((file, idx) => <AnimatePresence key={file.name} mode="sync"><ImageChip image={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
+        </motion.div>
       </motion.div>
 
       <Suggestions
@@ -207,6 +207,6 @@ export default function Animated() {
           }
         }}
       />
-    </div>
+    </motion.div>
   );
 }

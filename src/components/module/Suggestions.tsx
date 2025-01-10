@@ -20,7 +20,7 @@ const container = {
     transition: {
       duration: 0.2,
       when: "afterChildren",
-      staggerChildren: 0.05,
+      staggerChildren: 0.1,
       staggerDirection: -1
     }
   },
@@ -53,11 +53,12 @@ export default function Suggestions({ onSelect }: SuggestionsProps) {
     <AnimatePresence>
       {
         show && <motion.div
+          layout="position"
+          transition={{ duration: 0.2 }}
           variants={container}
           initial="hidden"
           animate="show"
           exit="exit"
-          transition={{ duration: 0.2 }}
           className="absolute w-full overflow-auto flex gap-2 no-scrollbar"
         >{suggestions.map((s) => (
           <motion.button
