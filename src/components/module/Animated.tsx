@@ -196,7 +196,7 @@ export default function Animated() {
         </motion.div>
 
         <motion.div
-          layout
+          layout="size"
           className="flex gap-1 col-span-full overflow-x-auto overflow-y-hidden no-scrollbar h-auto bg-gray-100 row-start-3 row-end-4 px-2"
           style={{
             paddingTop: files.length > 0 ? '4px' : 0,
@@ -208,7 +208,19 @@ export default function Animated() {
             duration: 0.2,
           }}
         >
-          {files.map((file, idx) => <AnimatePresence key={file.name} mode="sync"><FileChip file={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
+          <AnimatePresence mode="popLayout">
+            {
+              files.map((file, idx) =>
+                <FileChip
+                  file={file}
+                  key={file.name}
+                  onDelete={() => handleFileDelete(idx)}
+                  count={files.length}
+                />
+              )
+            }
+          </AnimatePresence>
+
         </motion.div>
       </motion.div>
     </motion.div>
