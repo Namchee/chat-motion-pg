@@ -6,34 +6,37 @@ type SuggestionsProps = {
 }
 
 const container = {
-  hidden: { opacity: 0, y: -12 },
+  hidden: { opacity: 0, height: 0 },
   show: {
     opacity: 1,
+    height: 'auto',
     transition: {
-      staggerChildren: 0.1,
-    },
-    y: 0,
+      staggerChildren: 0.05,
+    }
   },
   exit: {
     opacity: 0,
-    y: -12,
+    height: 0,
     transition: {
-      duration: 0.2,
       when: "afterChildren",
-      staggerChildren: 0.1,
-      staggerDirection: -1
+      staggerChildren: 0.05,
+      staggerDirection: -1,
     }
-  },
-}
+  }
+};
 
 const item = {
   hidden: {
     opacity: 0,
-    y: -12,
+    y: 32,
   },
   show: {
     opacity: 1,
     y: 0,
+  },
+  exit: {
+    opacity: 0,
+    y: 32,
   }
 };
 
@@ -59,7 +62,7 @@ export default function Suggestions({ onSelect }: SuggestionsProps) {
           initial="hidden"
           animate="show"
           exit="exit"
-          className="absolute w-full overflow-auto flex gap-2 no-scrollbar"
+          className="absolute w-full overflow-auto flex gap-2 no-scrollbar -top-10"
         >{suggestions.map((s) => (
           <motion.button
             key={s}

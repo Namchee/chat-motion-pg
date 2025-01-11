@@ -51,7 +51,16 @@ export default function Animated() {
   }
 
   return (
-    <motion.div layout="size" transition={{ duration: 0.2 }} className="relative w-full max-w-lg space-y-3">
+    <motion.div layout="size" transition={{ duration: 0.2 }} className="relative w-full max-w-lg">
+      <Suggestions
+        onSelect={(s) => {
+          if (inputRef.current) {
+            inputRef.current.textContent = s;
+            setMessage(s);
+          }
+        }}
+      />
+
       <motion.div
         layout
         ref={containerRef}
@@ -83,11 +92,12 @@ export default function Animated() {
           spellCheck={false}
           tabIndex={0}
           data-placeholder="Ask me anything..."
-          className="focus:outline-none py-[10px] px-3 text-sm text-gray-700"
+          className={cn("focus:outline-none py-[10px] text-sm text-gray-700", expanded ? "px-3" : "px-2")}
           onInput={(e) => setMessage(e.currentTarget.textContent ?? "")}
         />
 
-        <motion.div layout="position"
+        <motion.div
+          layout="position"
           style={{
             gridRowStart: expanded ? 2 : 1,
             gridRowEnd: expanded ? 3 : 2,
@@ -201,15 +211,6 @@ export default function Animated() {
           {files.map((file, idx) => <AnimatePresence key={file.name} mode="sync"><FileChip file={file} onDelete={() => handleFileDelete(idx)} key={file.name} /></AnimatePresence>)}
         </motion.div>
       </motion.div>
-
-      <Suggestions
-        onSelect={(s) => {
-          if (inputRef.current) {
-            inputRef.current.textContent = s;
-            setMessage(s);
-          }
-        }}
-      />
     </motion.div>
   );
 }
